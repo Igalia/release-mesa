@@ -17,7 +17,7 @@ env:
 
 before_script:
   - pip install docker-jinja
-  - wget https://raw.githubusercontent.com/Igalia/mesa-dockerfiles/travis/Dockerfile.mesa.travis.jinja
+  - wget https://raw.githubusercontent.com/Igalia/mesa-dockerfiles/master/Dockerfile.mesa.travis.jinja
 
 script:
   - dj -d Dockerfile.mesa.travis.jinja -o Dockerfile -e BUILD=$BUILD

@@ -14,11 +14,12 @@ branches:
 env:
   - BUILD=autotools
   - BUILD=scons
+  - BUILD=distcheck
 
 before_script:
   - pip install docker-jinja
-  - wget https://raw.githubusercontent.com/Igalia/mesa-dockerfiles/master/Dockerfile.mesa.travis.jinja
+  - wget https://raw.githubusercontent.com/Igalia/mesa-dockerfiles/master/Dockerfile.mesa.jinja
 
 script:
-  - dj -d Dockerfile.mesa.travis.jinja -o Dockerfile -e BUILD=$BUILD
+  - dj -d Dockerfile.mesa.jinja -o Dockerfile -e BUILDJOBS=2 -e BUILD=$BUILD
   - docker build . -f Dockerfile -t igalia/mesa

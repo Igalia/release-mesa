@@ -10,6 +10,7 @@ notifications:
 branches:
   only:
     - travis
+    - wip/17.0
 
 env:
   - BUILD=autotools

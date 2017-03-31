@@ -100,6 +100,9 @@ install:
   - tar -jxvf $LIBXSHMFENCE_VERSION.tar.bz2
   - (cd $LIBXSHMFENCE_VERSION && ./configure --prefix=$HOME/prefix && make install)
 
+  # libtxc-dxtn-s2tc0 will make scons check fail so we remove it ...
+  - sudo apt-get purge libtxc-dxtn-s2tc0
+
 script:
   - if test "x$BUILD" = xmake; then
       ./autogen.sh --enable-debug

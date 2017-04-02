@@ -23,4 +23,4 @@ before_script:
 
 script:
   - dj -d Dockerfile.mesa.jinja -o Dockerfile -e BUILDJOBS=2 -e BUILD=$BUILD
-  - docker build . -f Dockerfile -t igalia/mesa
+  - docker build -c 2 -f Dockerfile -t igalia/mesa .

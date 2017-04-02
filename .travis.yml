@@ -14,13 +14,22 @@ branches:
 
 env:
   - BUILD=autotools
+    LLVM=3.3
+  - BUILD=autotools
+    LLVM=3.6
+  - BUILD=autotools
+    LLVM=3.8
+  - BUILD=autotools
+    LLVM=3.9
   - BUILD=scons
+    LLVM=3.9
   - BUILD=distcheck
+    LLVM=3.9
 
 before_script:
   - pip install docker-jinja
   - wget https://raw.githubusercontent.com/Igalia/mesa-dockerfiles/master/Dockerfile.mesa.jinja
 
 script:
-  - dj -d Dockerfile.mesa.jinja -o Dockerfile -e BUILDJOBS=2 -e BUILD=$BUILD
+  - dj -d Dockerfile.mesa.jinja -o Dockerfile -e BUILDJOBS=2 -e BUILD=$BUILD -e LLVM=$LLVM
   - docker build -c 2 -f Dockerfile -t igalia/mesa .

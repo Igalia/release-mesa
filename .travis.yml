@@ -13,27 +13,21 @@ branches:
     - wip/17.0
 
 env:
-  - BUILD=autotools
-    LLVM=3.3
-    WINDOWS=0
-  - BUILD=autotools
-    LLVM=3.6
-    WINDOWS=0
-  - BUILD=autotools
-    LLVM=3.8
-    WINDOWS=0
-  - BUILD=autotools
-    LLVM=3.9
-    WINDOWS=0
-  - BUILD=scons
-    LLVM=3.9
-    WINDOWS=0
-  - BUILD=scons
-    LLVM=3.9
-    WINDOWS=1
-  - BUILD=distcheck
-    LLVM=3.9
-    WINDOWS=0
+  global:
+    - WINDOWS=0
+      LLVM=3.9
+  matrix:
+    - BUILD=autotools
+    - BUILD=autotools
+      LLVM=3.8
+    - BUILD=autotools
+      LLVM=3.6
+    - BUILD=autotools
+      LLVM=3.3
+    - BUILD=scons
+    - BUILD=scons
+      WINDOWS=1
+    - BUILD=distcheck
 
 before_script:
   - pip install docker-jinja

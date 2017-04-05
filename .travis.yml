@@ -14,8 +14,7 @@ branches:
 
 env:
   global:
-    - WINDOWS=0
-      LLVM=3.9
+    - LLVM=3.9
   matrix:
     - BUILD=autotools
     - BUILD=autotools
@@ -25,8 +24,7 @@ env:
     - BUILD=autotools
       LLVM=3.3
     - BUILD=scons
-    - BUILD=scons
-      WINDOWS=1
+    - BUILD=windows
     - BUILD=distcheck
 
 before_script:
@@ -34,5 +32,5 @@ before_script:
   - wget https://raw.githubusercontent.com/Igalia/mesa-dockerfiles/master/Dockerfile.mesa.jinja
 
 script:
-  - dj -d Dockerfile.mesa.jinja -o Dockerfile -e BUILDJOBS=2 -e BUILD=$BUILD -e LLVM=$LLVM -e WINDOWS=$WINDOWS
+  - dj -d Dockerfile.mesa.jinja -o Dockerfile -e BUILDJOBS=2 -e BUILD=$BUILD -e LLVM=$LLVM
   - docker build -c 2 -f Dockerfile -t igalia/mesa .

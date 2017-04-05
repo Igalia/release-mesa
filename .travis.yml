@@ -9,7 +9,7 @@ notifications:
 
 branches:
   only:
-    - travis
+    - wip/master
     - wip/17.0
 
 env:

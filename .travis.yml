@@ -15,6 +15,7 @@ branches:
 env:
   global:
     - LLVM=3.9
+    - MAKEFLAGS="-j$(getconf _NPROCESSORS_ONLN)"
   matrix:
     - BUILD=autotools
     - BUILD=autotools
@@ -32,7 +33,7 @@ before_script:
   - wget https://raw.githubusercontent.com/Igalia/mesa-dockerfiles/master/Dockerfile.mesa.jinja
 
 script:
-  - dj -d Dockerfile.mesa.jinja -o Dockerfile -e BUILDJOBS=2 -e BUILD=$BUILD -e LLVM=$LLVM
+  - dj -d Dockerfile.mesa.jinja -o Dockerfile -e MAKEFLAGS=$MAKEFLAGS -e LLVM=$LLVM
   - docker build -f Dockerfile -t igalia/mesa:$(echo -n $TRAVIS_BRANCH | cut -f2 -d/) .
 
 after_success:

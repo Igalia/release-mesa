@@ -33,7 +33,7 @@ before_script:
 
 script:
   - dj -d Dockerfile.mesa.jinja -o Dockerfile -e BUILDJOBS=2 -e BUILD=$BUILD -e LLVM=$LLVM
-  - docker build -c 2 -f Dockerfile -t igalia/mesa:$(echo -n $TRAVIS_BRANCH | cut -f2 -d/) .
+  - docker build -f Dockerfile -t igalia/mesa:$(echo -n $TRAVIS_BRANCH | cut -f2 -d/) .
 
 after_success:
   - if [[ -n "$DOCKER_USERNAME" && "$BUILD" == "autotools" && "$LLVM" == "3.9" ]]; then

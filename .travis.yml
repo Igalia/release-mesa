@@ -5,7 +5,10 @@ services:
   - docker
 
 notifications:
-  email: false
+  email:
+    recipients:
+      - jasuarez+mesa-travis@igalia.com
+      - tanty+mesa-travis@igalia.com
 
 branches:
   only:

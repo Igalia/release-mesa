@@ -694,10 +694,10 @@ void anv_CmdUpdateBuffer(
       struct anv_state tmp_data =
          anv_cmd_buffer_alloc_dynamic_state(cmd_buffer, copy_size, 64);
 
+      memcpy(tmp_data.map, pData, copy_size);
+
       if (!cmd_buffer->device->info.has_llc)
          anv_state_clflush(tmp_data);
-
-      memcpy(tmp_data.map, pData, copy_size);
 
       int bs = 16;
       bs = gcd_pow2_u64(bs, dstOffset);

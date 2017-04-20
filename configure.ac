@@ -727,7 +727,7 @@ dnl Arch/platform-specific settings
 dnl
 AC_ARG_ENABLE([asm],
     [AS_HELP_STRING([--disable-asm],
-        [disable assembly usage @<:@default=enabled on supported plaforms@:>@])],
+        [disable assembly usage @<:@default=enabled on supported platforms@:>@])],
     [enable_asm="$enableval"],
     [enable_asm=yes]
 )

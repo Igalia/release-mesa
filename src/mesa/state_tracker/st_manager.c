@@ -175,10 +175,6 @@ st_framebuffer_validate(struct st_framebuffer *stfb,
    boolean changed = FALSE;
    int32_t new_stamp;
 
-   /* Check for incomplete framebuffers (e.g. EGL_KHR_surfaceless_context) */
-   if (!stfb->iface)
-      return;
-
    new_stamp = p_atomic_read(&stfb->iface->stamp);
    if (stfb->iface_stamp == new_stamp)
       return;
@@ -278,9 +274,6 @@ st_framebuffer_add_renderbuffer(struct st_framebuffer *stfb,
    struct gl_renderbuffer *rb;
    enum pipe_format format;
    boolean sw;
-
-   if (!stfb->iface)
-      return FALSE;
 
    /* do not distinguish depth/stencil buffers */
    if (idx == BUFFER_STENCIL)

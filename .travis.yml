@@ -14,6 +14,7 @@ branches:
   only:
     - wip/master
     - wip/17.0
+    - jasuarez/17.0
 
 env:
   global:

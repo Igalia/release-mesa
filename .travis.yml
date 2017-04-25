@@ -12,9 +12,10 @@ notifications:
 
 branches:
   only:
-    - wip/master
-    - wip/17.0
+    - pre-release/17.0
     - jasuarez/17.0
+    - jasuarez/master
+    - agomez/17.0
 
 env:
   global:

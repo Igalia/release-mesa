@@ -1,6 +1,7 @@
 sudo: false
 os: linux
 language: c
+cache: ccache
 services:
   - docker
 
@@ -12,9 +13,13 @@ notifications:
 
 branches:
   only:
-    - wip/master
-    - wip/17.0
+    # TODO: tag the released ones using something like
+    #       $ git describe | cut -d "-" -f 2
+    - released/17.0
+    - pre-release/17.0
     - jasuarez/17.0
+    - jasuarez/master
+    - agomez/17.0
 
 env:
   global:
@@ -22,6 +27,7 @@ env:
     - MAKEFLAGS="-j$(getconf _NPROCESSORS_ONLN)"
   matrix:
     - BUILD=autotools
+      LLVM=3.9
     - BUILD=autotools
       LLVM=3.8
     - BUILD=autotools
@@ -35,13 +41,22 @@ env:
 before_script:
   - pip install docker-jinja
   - wget https://raw.githubusercontent.com/Igalia/mesa-dockerfiles/master/Dockerfile.mesa.jinja
+  - export ID=$RANDOM
+  - mkdir -p -m777 ~/.ccache
 
 script:
   - dj -d Dockerfile.mesa.jinja -o Dockerfile -e BUILD=$BUILD -e LLVM=$LLVM -e MAKEFLAGS=$MAKEFLAGS
-  - docker build -f Dockerfile -t igalia/mesa:$(echo -n $TRAVIS_BRANCH | cut -f2 -d/) .
+  - docker build -f Dockerfile -t image-$ID .
+  - docker run -v ~/.ccache:/home/local/.ccache --name container-$ID image-$ID
+  - docker commit container-$ID igalia/mesa:${TRAVIS_BRANCH%%/*}-${TRAVIS_BRANCH##*/}
 
 after_success:
   - if [[ -n "$DOCKER_USERNAME" && "$BUILD" == "autotools" && "$LLVM" == "3.9" ]]; then
-      docker login -u "$DOCKER_USERNAME" -p "$DOCKER_PASSWORD";
-      docker push igalia/mesa:$(echo -n $TRAVIS_BRANCH | cut -f2 -d/);
+      if [[ ${TRAVIS_BRANCH%%/*}" == "pre-release" ]]; then
+        docker login -u "$DOCKER_USERNAME" -p "$DOCKER_PASSWORD";
+        docker push igalia/mesa:${TRAVIS_BRANCH%%/*}-${TRAVIS_BRANCH##*/};
+      elif [[ ${TRAVIS_BRANCH%%/*} == "released" ]]; then
+        docker login -u "$DOCKER_USERNAME" -p "$DOCKER_PASSWORD";
+        docker push igalia/mesa:${TRAVIS_BRANCH%%/*}-${TRAVIS_BRANCH##*/};
+      fi
     fi

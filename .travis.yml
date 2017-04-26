@@ -40,15 +40,15 @@ before_script:
 
 script:
   - dj -d Dockerfile.mesa.jinja -o Dockerfile -e BUILD=$BUILD -e LLVM=$LLVM -e MAKEFLAGS=$MAKEFLAGS
-  - docker build -f Dockerfile -t igalia/mesa:$(echo -n $TRAVIS_BRANCH | cut -f2 -d/) .
+  - docker build -f Dockerfile -t igalia/mesa:${TRAVIS_BRANCH%%/*}-${TRAVIS_BRANCH##*/} .
 
 after_success:
   - if [[ -n "$DOCKER_USERNAME" && "$BUILD" == "autotools" && "$LLVM" == "3.9" ]]; then
-      if [[ "$TRAVIS_BRANCH" == "pre-release/"* ]]; then
+      if [[ ${TRAVIS_BRANCH%%/*}" == "pre-release" ]]; then
         docker login -u "$DOCKER_USERNAME" -p "$DOCKER_PASSWORD";
-        docker push igalia/mesa:pre-release-$(echo -n $TRAVIS_BRANCH | cut -f2 -d/);
-      elif [[ "$TRAVIS_BRANCH" == "released/"* ]]; then
+        docker push igalia/mesa:${TRAVIS_BRANCH%%/*}-${TRAVIS_BRANCH##*/};
+      elif [[ ${TRAVIS_BRANCH%%/*} == "released" ]]; then
         docker login -u "$DOCKER_USERNAME" -p "$DOCKER_PASSWORD";
-        docker push igalia/mesa:released-$(echo -n $TRAVIS_BRANCH | cut -f2 -d/);
+        docker push igalia/mesa:${TRAVIS_BRANCH%%/*}-${TRAVIS_BRANCH##*/};
       fi
     fi

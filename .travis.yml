@@ -48,14 +48,11 @@ script:
   - dj -d Dockerfile.mesa.jinja -o Dockerfile -e BUILD=$BUILD -e LLVM=$LLVM -e MAKEFLAGS=$MAKEFLAGS
   - docker build -f Dockerfile -t image-$ID .
   - docker run -v ~/.ccache:/home/local/.ccache --name container-$ID image-$ID
-  - docker commit container-$ID igalia/mesa:${TRAVIS_BRANCH%%/*}-${TRAVIS_BRANCH##*/}
+  - docker commit container-$ID igalia/mesa:"${TRAVIS_BRANCH%%/*}"-"${TRAVIS_BRANCH##*/}"
 
 after_success:
   - if [[ -n "$DOCKER_USERNAME" && "$BUILD" == "autotools" && "$LLVM" == "3.9" ]]; then
-      if [[ ${TRAVIS_BRANCH%%/*}" == "pre-release" ]]; then
-        docker login -u "$DOCKER_USERNAME" -p "$DOCKER_PASSWORD";
-        docker push igalia/mesa:${TRAVIS_BRANCH%%/*}-${TRAVIS_BRANCH##*/};
-      elif [[ ${TRAVIS_BRANCH%%/*} == "released" ]]; then
+      if [[ "${TRAVIS_BRANCH%%/*}" == "pre-release" || "${TRAVIS_BRANCH%%/*}" == "released" ]]; then
         docker login -u "$DOCKER_USERNAME" -p "$DOCKER_PASSWORD";
         docker push igalia/mesa:${TRAVIS_BRANCH%%/*}-${TRAVIS_BRANCH##*/};
       fi

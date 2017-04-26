@@ -12,6 +12,8 @@ notifications:
 
 branches:
   only:
+    # TODO: tag the released ones using something like
+    #       $ git describe | cut -d "-" -f 2
     - released/17.0
     - pre-release/17.0
     - jasuarez/17.0

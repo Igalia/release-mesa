@@ -48,3 +48,10 @@ f282ace67862c0633d0a8135e4808867740d0d39 i965: remove i965_symbols_test referenc
 # fixes: reported only because referes to fixes in 2 commits, but they
 #        are not in stable.
 a6840efc096bd26e92bcee1a50515d845988a2f9 anv: provide required gem stubs for the tests
+# stable: 17.1 nomination only.
+65e0c3fba74ee98cacadbba4bd005b930609b65e radeonsi/gfx9: fix texture buffer objects and image buffers with IDXEN==0
+5c94779585e24e8bd1bd41707521584af4251de3 radeonsi/gfx9: fix most things wrong with shader images
+482e6b07cc6ce4b2ceac8188be19dbf252eaecde radeonsi/gfx9: fix 1D array shader images
+8e8570a9e8bae7f4d3ad623475dfadc715a828d7 radeonsi/gfx9: add a workaround for viewing a slice of 3D as a 2D image
+60a20e6879e4ce0911b12848ffd9e372f096590e radeonsi/gfx9: set MAX_PRIMGRP_IN_WAVE in the correct register
+80814819c28353a38c03d4cdba39983b8cf260ac radeonsi/gfx9: don't set deprecated field PARTIAL_ES_WAVE_ON

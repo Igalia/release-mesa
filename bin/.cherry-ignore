@@ -65,3 +65,6 @@ ce412371513c90bf9156f22c3567ee57750ef264 disk_cache: reduce default cache size t
 # stable: 17.1 nomination only. Fixes earlier commit 4d30024238e which
 # 	  did not land in branch.
 d884d1a6540ec0f60768c30df47f0228a37ea61c vc4: Only build the NEON code on arm32.
+# stable: 17.1 nomination only. Fixes earlier commit 6403e376511 which
+# 	  did not land in branch.
+6f21b5601cc1260eac53f65c8941b3aa66d0f5e9 i965: Solve Android native fence fd double close

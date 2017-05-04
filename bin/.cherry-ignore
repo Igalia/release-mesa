@@ -58,3 +58,7 @@ a6840efc096bd26e92bcee1a50515d845988a2f9 anv: provide required gem stubs for the
 # stable: 17.1 nomination only. Fixes earlier commit 651ec926fc1 which
 # 	  did not land in branch.
 c43b4bc85eddba8bc31665cfee5928bed8343516 anv: Don't place scratch buffers above the 32-bit boundary
+# stable: 17.1 nomination only. Disk cache doesn't feature yet in branch.
+ce412371513c90bf9156f22c3567ee57750ef264 disk_cache: reduce default cache size to 5% of filesystem
+4e1f3afea9bdeddb0d21f00d25319bce580d80c3 disk_cache: use block size rather than file size
+22fa3d90a92c1628215d0f5fccbe1116d4f5147f util/disk_cache: remove percentage based max cache limit

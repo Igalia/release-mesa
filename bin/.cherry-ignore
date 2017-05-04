@@ -55,3 +55,6 @@ a6840efc096bd26e92bcee1a50515d845988a2f9 anv: provide required gem stubs for the
 8e8570a9e8bae7f4d3ad623475dfadc715a828d7 radeonsi/gfx9: add a workaround for viewing a slice of 3D as a 2D image
 60a20e6879e4ce0911b12848ffd9e372f096590e radeonsi/gfx9: set MAX_PRIMGRP_IN_WAVE in the correct register
 80814819c28353a38c03d4cdba39983b8cf260ac radeonsi/gfx9: don't set deprecated field PARTIAL_ES_WAVE_ON
+# stable: 17.1 nomination only. Fixes earlier commit 651ec926fc1 which
+# 	  did not land in branch.
+c43b4bc85eddba8bc31665cfee5928bed8343516 anv: Don't place scratch buffers above the 32-bit boundary

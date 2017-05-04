@@ -62,3 +62,6 @@ c43b4bc85eddba8bc31665cfee5928bed8343516 anv: Don't place scratch buffers above 
 ce412371513c90bf9156f22c3567ee57750ef264 disk_cache: reduce default cache size to 5% of filesystem
 4e1f3afea9bdeddb0d21f00d25319bce580d80c3 disk_cache: use block size rather than file size
 22fa3d90a92c1628215d0f5fccbe1116d4f5147f util/disk_cache: remove percentage based max cache limit
+# stable: 17.1 nomination only. Fixes earlier commit 4d30024238e which
+# 	  did not land in branch.
+d884d1a6540ec0f60768c30df47f0228a37ea61c vc4: Only build the NEON code on arm32.

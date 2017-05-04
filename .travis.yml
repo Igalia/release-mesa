@@ -51,7 +51,7 @@ script:
   - docker commit container-$ID igalia/mesa:"${TRAVIS_BRANCH%%/*}"-"${TRAVIS_BRANCH##*/}"
 
 after_success:
-  - if [[ -n "$DOCKER_USERNAME" && "$BUILD" == "autotools" && "$LLVM" == "3.9" ]]; then
+  - if [[ -n "$DOCKER_USERNAME" && "$BUILD" == "autotools" && "$LLVM" == "3.9" && "$TRAVIS_PULL_REQUEST" == "false" ]]; then
       if [[ "${TRAVIS_BRANCH%%/*}" == "pre-release" || "${TRAVIS_BRANCH%%/*}" == "released" ]]; then
         docker login -u "$DOCKER_USERNAME" -p "$DOCKER_PASSWORD";
         docker push igalia/mesa:${TRAVIS_BRANCH%%/*}-${TRAVIS_BRANCH##*/};

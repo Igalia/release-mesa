@@ -39,16 +39,14 @@ env:
     - BUILD=distcheck
 
 before_script:
-  - pip install docker-jinja
-  - wget https://raw.githubusercontent.com/Igalia/mesa-dockerfiles/master/Dockerfile.mesa.jinja
-  - export ID=$RANDOM
+  - wget https://raw.githubusercontent.com/Igalia/mesa-dockerfiles/master/Rockerfile.mesa
+  - wget https://github.com/grammarly/rocker/releases/download/1.3.0/rocker_linux_amd64.tar.gz
+  - tar xvf rocker_linux_amd64.tar.gz
+  - rm rocker_linux_amd64.tar.gz
   - mkdir -p -m777 ~/.ccache
 
 script:
-  - dj -d Dockerfile.mesa.jinja -o Dockerfile -e BUILD=$BUILD -e LLVM=$LLVM -e MAKEFLAGS=$MAKEFLAGS
-  - docker build -f Dockerfile -t image-$ID .
-  - docker run -v ~/.ccache:/home/local/.ccache --name container-$ID image-$ID
-  - docker commit container-$ID igalia/mesa:"${TRAVIS_BRANCH%%/*}"-"${TRAVIS_BRANCH##*/}"
+  - ./rocker build -f Rockerfile.mesa --var BUILD=$BUILD --var LLVM=$LLVM --var TAG=${TRAVIS_BRANCH%%/*}-${TRAVIS_BRANCH##*/}
 
 after_success:
   - if [[ -n "$DOCKER_USERNAME" && "$BUILD" == "autotools" && "$LLVM" == "3.9" && "$TRAVIS_PULL_REQUEST" == "false" ]]; then

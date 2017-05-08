@@ -79,3 +79,7 @@ d884d1a6540ec0f60768c30df47f0228a37ea61c vc4: Only build the NEON code on arm32.
 # stable: 17.1 nomination only. Contributes to earlier commit
 # 	  3f0d69af20e which did not land in branch.
 2add79a73291e40621081b9a12938ac1931b9e96 radv: apply the tess+GS hang workaround to Polaris12 as well
+# stable: 17.1 nomination only. Reverts earlier commit
+#         c5bf7cb52942cb7df9f5d73746ffbf3c102d12cc which did not land
+#         in branch.
+1456da91c8a14f77dd347981e2bc95e0644e0fd2 Revert "mesa: Require mipmap completeness for glCopyImageSubData(), sometimes."

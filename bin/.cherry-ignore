@@ -98,3 +98,6 @@ a096d8d3f7a8c6dffc91b2ac1794fdd215c054d3 radv: enable POLARIS12 support.
 # stable: 17.1 nomination only. Completes commit a096d8d3f7a which did
 #         not land in branch.
 ee5908396e4b0d4be64d8bc486d25c2e95b7fd71 radeonsi: apply the tess+GS hang workaround to Polaris12 as well
+# stable: 17.1 nomination only. 17.0 doesn't support
+#         VK_KHR_push_descriptor, so it doesn't need this patch.
+5ff48581119258214801de24a327bdd6a29e0ccc radv/meta: fix restoring a push descriptor set

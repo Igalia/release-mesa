@@ -90,3 +90,6 @@ bc074a45180eddf30ea723bbdf89895e2c7684ca i965: Don't try to unmap NULL program c
 # stable: 17.1 nomination only. Fixes a regression caused by commit
 #         bdd644976952 which did not land in branch.
 854ed47f3e1501e4cc87bf9f19c6d4a1ad2bab08 radeonsi: mark fast-cleared textures as compressed when dirtying
+# stable: 17.1 nomination only. MSAA was enabled by 1832ef6cd9b which
+#         did not land in branch.
+f52e63069a3fad23e03d42306a42bd20f0159da3 swr: move msaa resolve to generalized StoreTile

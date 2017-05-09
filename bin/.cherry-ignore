@@ -87,3 +87,6 @@ d884d1a6540ec0f60768c30df47f0228a37ea61c vc4: Only build the NEON code on arm32.
 #         commit 7c3b8ed87859bfdfb985d21685115a729f9cd138 which did
 #         not land in branch.
 bc074a45180eddf30ea723bbdf89895e2c7684ca i965: Don't try to unmap NULL program cache BO.
+# stable: 17.1 nomination only. Fixes a regression caused by commit
+#         bdd644976952 which did not land in branch.
+854ed47f3e1501e4cc87bf9f19c6d4a1ad2bab08 radeonsi: mark fast-cleared textures as compressed when dirtying

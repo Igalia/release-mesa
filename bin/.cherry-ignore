@@ -104,3 +104,6 @@ ee5908396e4b0d4be64d8bc486d25c2e95b7fd71 radeonsi: apply the tess+GS hang workar
 # stable: 17.1 nomination only. Depends on earlier commit 5f99c490089
 # 	  which did not land in branch.
 0549ea15ec380f3ca6df76ce53ff4c30bfc21dbf radeonsi: fix primitive ID in fragment shader when using tessellation
+# stable: 17.1 nomination only. Depends on earlier commit 9fd9a7d0ba3
+# 	  which did not land in branch.
+b84b631c6381d9b36bca5d0e7cc67dd23af188c1 radeonsi: load patch_id for TES-as-ES when exporting for PS

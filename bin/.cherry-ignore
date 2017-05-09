@@ -95,3 +95,6 @@ bc074a45180eddf30ea723bbdf89895e2c7684ca i965: Don't try to unmap NULL program c
 f52e63069a3fad23e03d42306a42bd20f0159da3 swr: move msaa resolve to generalized StoreTile
 # stable: 17.1 nomination only.
 a096d8d3f7a8c6dffc91b2ac1794fdd215c054d3 radv: enable POLARIS12 support.
+# stable: 17.1 nomination only. Completes commit a096d8d3f7a which did
+#         not land in branch.
+ee5908396e4b0d4be64d8bc486d25c2e95b7fd71 radeonsi: apply the tess+GS hang workaround to Polaris12 as well

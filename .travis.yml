@@ -27,6 +27,8 @@ env:
     - MAKEFLAGS="-j$(getconf _NPROCESSORS_ONLN)"
   matrix:
     - BUILD=autotools
+      LLVM=4.0
+    - BUILD=autotools
       LLVM=3.9
     - BUILD=autotools
       LLVM=3.8

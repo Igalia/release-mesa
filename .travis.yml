@@ -24,7 +24,7 @@ branches:
 env:
   global:
     - LLVM=3.9
-    - MAKEFLAGS="-j$(getconf _NPROCESSORS_ONLN)"
+    - MAKEFLAGS="-j4"
   matrix:
     - BUILD=autotools
       LLVM=4.0

@@ -32,8 +32,8 @@ env:
       LLVM=3.8
     - BUILD=autotools
       LLVM=3.6
-#    - BUILD=autotools
-#      LLVM=3.3
+    - BUILD=autotools
+      LLVM=3.3
     - BUILD=scons
     - BUILD=windows
     - BUILD=distcheck

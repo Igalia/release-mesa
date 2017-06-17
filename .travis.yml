@@ -29,8 +29,11 @@ env:
   global:
     - LLVM=3.9
     - MAKEFLAGS="-j4"
+    - DEBUG=false
   matrix:
     - BUILD=autotools
+    - BUILD=autotools
+      DEBUG=true
     - BUILD=distcheck
     - BUILD=gallium
       LLVM=4.0
@@ -57,13 +60,13 @@ before_script:
   - mkdir -p -m777 ~/.ccache
 
 script:
-  - ./rocker build -f Rockerfile.mesa --var BUILD=$BUILD --var LLVM=$LLVM --var TAG=${TRAVIS_BRANCH%%/*}-${TRAVIS_BRANCH##*/}
+  - ./rocker build -f Rockerfile.mesa --var BUILD=$BUILD --var LLVM=$LLVM --var DEBUG=$DEBUG --var TAG=${TRAVIS_BRANCH%%/*}-${TRAVIS_BRANCH##*/}$(${DEBUG:-false} && printf ".debug")
 
 after_success:
   - if [[ -n "$DOCKER_USERNAME" && "$BUILD" == "autotools" && "$LLVM" == "3.9" && "$TRAVIS_PULL_REQUEST" == "false" ]]; then
       docker login -u "$DOCKER_USERNAME" -p "$DOCKER_PASSWORD";
       if [[ "${TRAVIS_BRANCH%%/*}" == "pre-release" || "${TRAVIS_BRANCH%%/*}" == "released" ]]; then
-        docker push igalia/mesa:${TRAVIS_BRANCH%%/*}-${TRAVIS_BRANCH##*/};
+        docker push igalia/mesa:${TRAVIS_BRANCH%%/*}-${TRAVIS_BRANCH##*/}$(${DEBUG:-false} && printf ".debug");
       fi;
       if [[ "${TRAVIS_BRANCH%%/*}" == "jasuarez/master" ]]; then
         docker tag igalia/mesa:${TRAVIS_BRANCH%%/*}-${TRAVIS_BRANCH##*/} igalia/mesa:master;

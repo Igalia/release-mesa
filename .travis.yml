@@ -25,6 +25,7 @@ branches:
     - agomez/master
     - agomez/17.0
     - agomez/17.1
+    - agomez/self-nominated/17.1
 
 env:
   global:

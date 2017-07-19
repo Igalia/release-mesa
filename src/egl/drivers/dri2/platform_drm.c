@@ -535,6 +535,9 @@ swrast_put_image2(__DRIdrawable *driDrawable,
    struct dri2_egl_surface *dri2_surf = loaderPrivate;
    int internal_stride, i;
    struct gbm_dri_bo *bo;
+   uint32_t bpp;
+   int x_bytes, width_bytes;
+   char *src, *dst;
 
    if (op != __DRI_SWRAST_IMAGE_OP_DRAW &&
        op != __DRI_SWRAST_IMAGE_OP_SWAP)
@@ -544,14 +547,26 @@ swrast_put_image2(__DRIdrawable *driDrawable,
       return;
 
    bo = gbm_dri_bo(dri2_surf->current->bo);
+
+   bpp = gbm_bo_get_bpp(&bo->base);
+   if (bpp == 0)
+      return;
+
+   x_bytes = x * (bpp >> 3);
+   width_bytes = width * (bpp >> 3);
+
    if (gbm_dri_bo_map_dumb(bo) == NULL)
       return;
 
    internal_stride = bo->base.base.stride;
 
+   dst = bo->map + x_bytes + (y * internal_stride);
+   src = data;
+
    for (i = 0; i < height; i++) {
-      memcpy(bo->map + (x + i) * internal_stride + y,
-             data + i * stride, stride);
+      memcpy(dst, src, width_bytes);
+      dst += internal_stride;
+      src += stride;
    }
 
    gbm_dri_bo_unmap_dumb(bo);

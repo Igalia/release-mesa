@@ -20,6 +20,7 @@ branches:
     - pre-release/17.0
     - pre-release/17.1
     - jasuarez/master
+    - jasuarez/split
     - jasuarez/17.0
     - jasuarez/17.1
     - agomez/17.0
@@ -30,8 +31,9 @@ env:
     - LLVM=3.9
     - MAKEFLAGS="-j4"
   matrix:
-    - BUILD=autotools
     - BUILD=distcheck
+    - BUILD=dri
+    - BUILD=vulkan
     - BUILD=gallium
       LLVM=4.0
     - BUILD=gallium

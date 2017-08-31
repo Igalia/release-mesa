@@ -309,8 +309,6 @@ execution_type(const struct gen_device_info *devinfo, const brw_inst *inst)
 {
    unsigned num_sources = num_sources_from_inst(devinfo, inst);
    unsigned src0_exec_type, src1_exec_type;
-   unsigned src0_type = brw_inst_src0_reg_type(devinfo, inst);
-   unsigned src1_type = brw_inst_src1_reg_type(devinfo, inst);
 
    bool src0_is_immediate =
       brw_inst_src0_reg_file(devinfo, inst) == BRW_IMMEDIATE_VALUE;
@@ -322,7 +320,8 @@ execution_type(const struct gen_device_info *devinfo, const brw_inst *inst)
     */
    unsigned dst_exec_type = brw_inst_dst_reg_type(devinfo, inst);
 
-   src0_exec_type = execution_type_for_type(src0_type, src0_is_immediate);
+   src0_exec_type = execution_type_for_type(brw_inst_src0_reg_type(devinfo, inst),
+                                            src0_is_immediate);
    if (num_sources == 1) {
       if ((devinfo->gen >= 9 || devinfo->is_cherryview) &&
           src0_exec_type == GEN8_HW_REG_NON_IMM_TYPE_HF) {
@@ -331,7 +330,8 @@ execution_type(const struct gen_device_info *devinfo, const brw_inst *inst)
       return src0_exec_type;
    }
 
-   src1_exec_type = execution_type_for_type(src1_type, src1_is_immediate);
+   src1_exec_type = execution_type_for_type(brw_inst_src1_reg_type(devinfo, inst),
+                                            src1_is_immediate);
    if (src0_exec_type == src1_exec_type)
       return src0_exec_type;
 

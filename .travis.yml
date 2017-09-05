@@ -54,7 +54,7 @@ env:
     - BUILD=windows
 
 before_script:
-  - wget https://raw.githubusercontent.com/Igalia/mesa-dockerfiles/master/Rockerfile.mesa
+  - wget "$ROCKERFILE_MESA"
   - wget https://github.com/grammarly/rocker/releases/download/1.3.0/rocker_linux_amd64.tar.gz
   - tar xvf rocker_linux_amd64.tar.gz
   - rm rocker_linux_amd64.tar.gz
@@ -67,10 +67,10 @@ after_success:
   - if [[ -n "$DOCKER_USERNAME" && "$BUILD" == "autotools" && "$LLVM" == "3.9" && "$TRAVIS_PULL_REQUEST" == "false" ]]; then
       docker login -u "$DOCKER_USERNAME" -p "$DOCKER_PASSWORD";
       if [[ "${TRAVIS_BRANCH%%/*}" == "pre-release" || "${TRAVIS_BRANCH%%/*}" == "released" ]]; then
-        docker push igalia/mesa:${TRAVIS_BRANCH%%/*}-${TRAVIS_BRANCH##*/}$(${DEBUG:-false} && printf ".debug");
+        docker push "$DOCKER_REPOSITORY"/"$DOCKER_IMAGE_NAME":${TRAVIS_BRANCH%%/*}-${TRAVIS_BRANCH##*/}$(${DEBUG:-false} && printf ".debug");
       fi;
       if [[ "${TRAVIS_BRANCH%%/*}" == "jasuarez/master" ]]; then
-        docker tag igalia/mesa:${TRAVIS_BRANCH%%/*}-${TRAVIS_BRANCH##*/} igalia/mesa:master;
-        docker push igalia/mesa:master;
+        docker tag "$DOCKER_REPOSITORY"/"$DOCKER_IMAGE_NAME":${TRAVIS_BRANCH%%/*}-${TRAVIS_BRANCH##*/} "$DOCKER_REPOSITORY"/"$DOCKER_IMAGE_NAME":master;
+        docker push "$DOCKER_REPOSITORY"/"$DOCKER_IMAGE_NAME":master;
       fi
     fi

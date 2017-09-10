@@ -31,6 +31,7 @@ env:
     - LLVM=3.9
     - MAKEFLAGS="-j4"
     - DEBUG=false
+    - TAR=false
 
 before_script:
   - wget "$ROCKERFILES_BASE_URL"/"$ROCKERFILE_MESA"
@@ -40,7 +41,7 @@ before_script:
   - mkdir -p -m777 ~/.ccache
 
 script:
-  - ./rocker build -f $ROCKERFILE_MESA --var BUILD=$BUILD --var LLVM=$LLVM --var DEBUG=$DEBUG --var TAG=${TRAVIS_BRANCH%%/*}-${TRAVIS_BRANCH##*/}$(${DEBUG:-false} && printf ".debug")
+  - ./rocker build -f $ROCKERFILE_MESA --var BUILD=$BUILD --var LLVM=$LLVM --var DEBUG=$DEBUG --var TAR=$TAR --var TAG=${TRAVIS_BRANCH%%/*}-${TRAVIS_BRANCH##*/}$(${DEBUG:-false} && printf ".debug")
 
 after_success:
   - if [[ -n "$DOCKER_USERNAME" && "$BUILD" == "autotools" && "$LLVM" == "3.9" && "$TRAVIS_PULL_REQUEST" == "false" ]]; then
@@ -58,6 +59,13 @@ jobs:
   include:
     - stage: Basic builds
       env: BUILD=distcheck
+      script:
+        - ./rocker build -f $ROCKERFILE_MESA --var BUILD=$BUILD --var LLVM=$LLVM --var DEBUG=$DEBUG --var TAR=$TAR --var TAG=${TRAVIS_BRANCH%%/*}-${TRAVIS_BRANCH##*/}.distcheck
+      after_success:
+        - if [[ -n "$DOCKER_USERNAME" && "$TRAVIS_PULL_REQUEST" == "false" ]]; then
+            docker login -u "$DOCKER_USERNAME" -p "$DOCKER_PASSWORD";
+            docker push "$DOCKER_REPOSITORY"/"$DOCKER_IMAGE_NAME":${TRAVIS_BRANCH%%/*}-${TRAVIS_BRANCH##*/}.distcheck;
+          fi
     - env: BUILD=autotools
     - env: BUILD=autotools DEBUG=true
     - env: BUILD=gallium LLVM=4.0
@@ -69,3 +77,11 @@ jobs:
     - env: BUILD=scons
     - env: BUILD=scons LLVM=0.0
     - env: BUILD=windows
+
+    - stage: Post distcheck builds
+      env: BUILD=autotools TAR=true
+      after_success: skip
+    - env: BUILD=scons TAR=true
+      after_success: skip
+    - env: BUILD=windows TAR=true
+      after_success: skip

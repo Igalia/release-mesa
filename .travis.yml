@@ -31,27 +31,6 @@ env:
     - LLVM=3.9
     - MAKEFLAGS="-j4"
     - DEBUG=false
-  matrix:
-    - BUILD=autotools
-    - BUILD=autotools
-      DEBUG=true
-    - BUILD=distcheck
-    - BUILD=gallium
-      LLVM=4.0
-    - BUILD=gallium
-      LLVM=3.9
-    - BUILD=gallium
-      LLVM=3.8
-    - BUILD=gallium
-      LLVM=3.6
-    - BUILD=gallium
-      LLVM=3.3
-    - BUILD=gallium
-      LLVM=0.0
-    - BUILD=scons
-    - BUILD=scons
-      LLVM=0.0
-    - BUILD=windows
 
 before_script:
   - wget "$ROCKERFILES_BASE_URL"/"$ROCKERFILE_MESA"
@@ -74,3 +53,19 @@ after_success:
         docker push "$DOCKER_REPOSITORY"/"$DOCKER_IMAGE_NAME":master;
       fi
     fi
+
+jobs:
+  include:
+    - stage: Basic builds
+      env: BUILD=distcheck
+    - env: BUILD=autotools
+    - env: BUILD=autotools DEBUG=true
+    - env: BUILD=gallium LLVM=4.0
+    - env: BUILD=gallium LLVM=3.9
+    - env: BUILD=gallium LLVM=3.8
+    - env: BUILD=gallium LLVM=3.6
+    - env: BUILD=gallium LLVM=3.3
+    - env: BUILD=gallium LLVM=0.0
+    - env: BUILD=scons
+    - env: BUILD=scons LLVM=0.0
+    - env: BUILD=windows

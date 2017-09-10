@@ -54,14 +54,14 @@ env:
     - BUILD=windows
 
 before_script:
-  - wget "$ROCKERFILE_MESA"
+  - wget "$ROCKERFILES_BASE_URL"/"$ROCKERFILE_MESA"
   - wget https://github.com/grammarly/rocker/releases/download/1.3.0/rocker_linux_amd64.tar.gz
   - tar xvf rocker_linux_amd64.tar.gz
   - rm rocker_linux_amd64.tar.gz
   - mkdir -p -m777 ~/.ccache
 
 script:
-  - ./rocker build -f Rockerfile.mesa --var BUILD=$BUILD --var LLVM=$LLVM --var DEBUG=$DEBUG --var TAG=${TRAVIS_BRANCH%%/*}-${TRAVIS_BRANCH##*/}$(${DEBUG:-false} && printf ".debug")
+  - ./rocker build -f $ROCKERFILE_MESA --var BUILD=$BUILD --var LLVM=$LLVM --var DEBUG=$DEBUG --var TAG=${TRAVIS_BRANCH%%/*}-${TRAVIS_BRANCH##*/}$(${DEBUG:-false} && printf ".debug")
 
 after_success:
   - if [[ -n "$DOCKER_USERNAME" && "$BUILD" == "autotools" && "$LLVM" == "3.9" && "$TRAVIS_PULL_REQUEST" == "false" ]]; then

@@ -19,4 +19,10 @@ if test "x$DO_CLASSIC_BUILD" = xyes && test "x$IS_CLASSIC_BUILD" = xyes; then
     test -n "$OVERRIDE_CXX" && export CXX="$OVERRIDE_CXX";
     scons $SCONS_TARGET && eval $SCONS_CHECK_COMMAND;
   fi
+elif test "x$DO_DOCKER_BUILD" = xyes && test "x$IS_DOCKER_BUILD" = xyes; then
+  if test "x$BUILD" = xdistcheck; then
+    ./rocker build -f $ROCKERFILE_MESA --var BUILD=$BUILD --var LLVM=$LLVM_VERSION --var DEBUG=$DOCKER_DEBUG --var TAR=$DOCKER_TAR --var TAG=${TRAVIS_BRANCH%%/*}-${TRAVIS_BRANCH##*/}.distcheck
+  else
+    ./rocker build -f $ROCKERFILE_MESA --var BUILD=$BUILD --var LLVM=$LLVM_VERSION --var DEBUG=$DOCKER_DEBUG --var TAR=$DOCKER_TAR --var TAG=${TRAVIS_BRANCH%%/*}-${TRAVIS_BRANCH##*/}$(${DEBUG:-false} && printf ".debug")
+  fi
 fi

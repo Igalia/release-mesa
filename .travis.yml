@@ -7,10 +7,15 @@ cache:
   apt: true
   ccache: true
 
+services:
+  - docker
+
 env:
   global:
     - DO_CLASSIC_BUILD=${CLASSIC_BUILD:-yes}
+    - DO_DOCKER_BUILD=${DOCKER_BUILD:-no}
     - IS_CLASSIC_BUILD=yes
+    - IS_DOCKER_BUILD=no
 
     # CLASSIC BUILD VARIABLES
     - XORG_RELEASES=http://xorg.freedesktop.org/releases/individual
@@ -31,6 +36,10 @@ env:
     - WAYLAND_PROTOCOLS_VERSION=wayland-protocols-1.8
     - PKG_CONFIG_PATH=$HOME/prefix/lib/pkgconfig:$HOME/prefix/share/pkgconfig
     - LD_LIBRARY_PATH="$HOME/prefix/lib:$LD_LIBRARY_PATH"
+
+    # DOCKER BUILD VARIABLES
+    - DOCKER_DEBUG=false
+    - DOCKER_TAR=false
 
 matrix:
   include:
@@ -272,10 +281,126 @@ matrix:
             - libexpat1-dev
             - libx11-xcb-dev
             - libelf-dev
+    - env:
+        - LABEL="Docker distcheck"
+        - BUILD=distcheck
+        - LLVM_VERSION=3.9
+        - MAKEFLAGS="-j4"
+        - IS_CLASSIC_BUILD=no
+        - IS_DOCKER_BUILD=yes
+    - env:
+        - LABEL="Docker autotools"
+        - BUILD=autotools
+        - LLVM_VERSION=3.9
+        - MAKEFLAGS="-j4"
+        - IS_CLASSIC_BUILD=no
+        - IS_DOCKER_BUILD=yes
+    - env:
+        - LABEL="Docker autotools debug"
+        - BUILD=autotools
+        - LLVM_VERSION=3.9
+        - MAKEFLAGS="-j4"
+        - DOCKER_DEBUG=true
+        - IS_CLASSIC_BUILD=no
+        - IS_DOCKER_BUILD=yes
+    - env:
+        - LABEL="Docker gallium llvm-4.0"
+        - BUILD=gallium
+        - LLVM_VERSION=4.0
+        - MAKEFLAGS="-j4"
+        - IS_CLASSIC_BUILD=no
+        - IS_DOCKER_BUILD=yes
+    - env:
+        - LABEL="Docker gallium llvm-3.9"
+        - BUILD=gallium
+        - LLVM_VERSION=3.9
+        - MAKEFLAGS="-j4"
+        - IS_CLASSIC_BUILD=no
+        - IS_DOCKER_BUILD=yes
+    - env:
+        - LABEL="Docker gallium llvm-3.8"
+        - BUILD=gallium
+        - LLVM_VERSION=3.8
+        - MAKEFLAGS="-j4"
+        - IS_CLASSIC_BUILD=no
+        - IS_DOCKER_BUILD=yes
+    - env:
+        - LABEL="Docker gallium llvm-3.6"
+        - BUILD=gallium
+        - LLVM_VERSION=3.6
+        - MAKEFLAGS="-j4"
+        - IS_CLASSIC_BUILD=no
+        - IS_DOCKER_BUILD=yes
+    - env:
+        - LABEL="Docker gallium llvm-3.3"
+        - BUILD=gallium
+        - LLVM_VERSION=3.3
+        - MAKEFLAGS="-j4"
+        - IS_CLASSIC_BUILD=no
+        - IS_DOCKER_BUILD=yes
+    - env:
+        - LABEL="Docker gallium no-llvm"
+        - BUILD=gallium
+        - LLVM_VERSION=0.0
+        - MAKEFLAGS="-j4"
+        - IS_CLASSIC_BUILD=no
+        - IS_DOCKER_BUILD=yes
+    - env:
+        - LABEL="Docker scons"
+        - BUILD=scons
+        - LLVM_VERSION=3.9
+        - SCONSFLAGS="-j4"
+        - IS_CLASSIC_BUILD=no
+        - IS_DOCKER_BUILD=yes
+    - env:
+        - LABEL="Docker scons no-llvm"
+        - BUILD=scons
+        - LLVM_VERSION=0.0
+        - SCONSFLAGS="-j4"
+        - IS_CLASSIC_BUILD=no
+        - IS_DOCKER_BUILD=yes
+    - env:
+        - LABEL="Docker scons windows"
+        - BUILD=windows
+        - LLVM_VERSION=3.9
+        - SCONSFLAGS="-j4"
+        - IS_CLASSIC_BUILD=no
+        - IS_DOCKER_BUILD=yes
 
+    - stage: Post distcheck builds
+      env:
+        - LABEL="Docker post-distcheck autotools"
+        - BUILD=autotools
+        - LLVM_VERSION=3.9
+        - MAKEFLAGS="-j4"
+        - DOCKER_TAR=true
+        - IS_CLASSIC_BUILD=no
+        - IS_DOCKER_BUILD=yes
+    - env:
+        - LABEL="Docker post-distcheck scons"
+        - BUILD=scons
+        - LLVM_VERSION=3.9
+        - MAKEFLAGS="-j4"
+        - DOCKER_TAR=true
+        - IS_CLASSIC_BUILD=no
+        - IS_DOCKER_BUILD=yes
+    - env:
+        - LABEL="Docker post-distcheck scons windows"
+        - BUILD=windows
+        - LLVM_VERSION=3.9
+        - DOCKER_TAR=true
+        - MAKEFLAGS="-j4"
+        - IS_CLASSIC_BUILD=no
+        - IS_DOCKER_BUILD=yes
 
 install:
   - ./bin/travis-install.sh
 
+before_script:
+  - ./bin/travis-before-script.sh
+
 script:
   - ./bin/travis-script.sh
+
+after_success:
+  - ./bin/travis-after-success.sh

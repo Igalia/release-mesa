@@ -11,3 +11,7 @@ be5773fa8dfe9255d9abaf5c7d5bbbd2d922da08 Android: fix compile error for DRI2 loa
 
 # stable: The commit addresses code that did not land in the stable branch
 31bb8517a194af733deefe2d821537d994d39365 radv/gfx9: fix tile swizzle handling for gfx9
+
+# fixes: Depend on preseding commit which adds new public GBM API
+3a5e3aa5a53cff55a5e31766d713a41ffa5a93d7 egl/drm: Fix misused x and y offsets in swrast_put_image2()
+fe2a6281b3b299998fe7399e7dbcc2077d773824 egl/drm: Fix misused x and y offsets in swrast_get_image()

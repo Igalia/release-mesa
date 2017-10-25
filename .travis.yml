@@ -15,16 +15,16 @@ branches:
   only:
     # TODO: tag the released ones using something like
     #       $ git describe | cut -d "-" -f 2
-    - released/17.0
-    - released/17.1
-    - pre-release/17.0
-    - pre-release/17.1
+    - released/17.2
+    - released/17.3
+    - pre-release/17.2
+    - pre-release/17.3
     - jasuarez/master
-    - jasuarez/17.0
-    - jasuarez/17.1
+    - jasuarez/17.2
+    - jasuarez/17.3
     - agomez/master
-    - agomez/17.0
-    - agomez/17.1
+    - agomez/17.2
+    - agomez/17.3
 
 env:
   global:

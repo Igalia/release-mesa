@@ -98,3 +98,6 @@ e8c9e65185de3e821e1e482e77906d1d51efa3ec intel/fs: Use a pure vertical stride fo
 # stable: These commits resulted in a CTS regression being addressed
 #         at https://bugs.freedesktop.org/show_bug.cgi?id=103626 .
 18fde36ced4279f2577097a1a7d31b55f2f5f141 intel/fs: Use the original destination region for int MUL lowering
+
+# fixes:  This commit is only a typo correction on an error message.
+a6932faae1074445210d392a80b94fdac147b255 glsl: Fix typo fragement -> fragment

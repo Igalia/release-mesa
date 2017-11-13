@@ -101,3 +101,8 @@ e8c9e65185de3e821e1e482e77906d1d51efa3ec intel/fs: Use a pure vertical stride fo
 
 # fixes:  This commit is only a typo correction on an error message.
 a6932faae1074445210d392a80b94fdac147b255 glsl: Fix typo fragement -> fragment
+
+# stable: These commits are refactorings rather than fixes.
+fcd4adb9d08094520fb8d118d3448b04c6ec1fd1 intel/fs: Pass builders instead of blocks into emit_[un]zip
+0d905597fe2997c89022c76cdf84dc4fba5eb055 intel/fs: Be more explicit about our placement of [un]zip
+6c00240bc650805e0b66aa6e17dbe69bbe41e446 intel/fs: Don't stomp f0.1 in SIMD16 ballot

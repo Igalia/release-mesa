@@ -85,3 +85,6 @@ e17e8934f9e4b008bdfb4f9abd8ed4faa604c7d9 automake: include git_sha1.h.in in rele
 
 # stable: 17.3 nomination only.
 6e4d65f674a70809e6df1a4f716f874828915562 broadcom/vc5: Add vc5_drm.h to the release tarball
+
+# stable: This commit is not really needed after 6ac2d169019.
+e8c9e65185de3e821e1e482e77906d1d51efa3ec intel/fs: Use a pure vertical stride for large register strides

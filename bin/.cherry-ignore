@@ -120,3 +120,7 @@ d7a19d69ebc032ba7207fc97bc6f10d5bb35bb99 i965: Use PTE MOCS for all external buf
 # extra:  The commit just references a proper fix that has already
 #         landed.
 a31d0382084c8aa860ffcef9b12592c5c44e192f Revert "intel/fs: Use a pure vertical stride for large register strides"
+
+# fixes:  This commit makes reference to 2 other commits but none have
+#         made it to the 17.2 queue.
+9b0223046668593deb9c0be0b557994bb5218788 egl: pass the dri2_dpy to the $plat_teardown functions

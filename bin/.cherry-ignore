@@ -124,3 +124,7 @@ a31d0382084c8aa860ffcef9b12592c5c44e192f Revert "intel/fs: Use a pure vertical s
 # fixes:  This commit makes reference to 2 other commits but none have
 #         made it to the 17.2 queue.
 9b0223046668593deb9c0be0b557994bb5218788 egl: pass the dri2_dpy to the $plat_teardown functions
+
+# stable: This commit depends on earlier commit 3735af04152b which did
+#         not land in branch.
+a6cc361e5fd2450249847d5ee8093d26ed7ff545 anv/cmd_buffer: Advance the address when initializing clear colors

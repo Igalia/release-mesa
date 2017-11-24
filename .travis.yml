@@ -62,9 +62,9 @@ after_success:
 jobs:
   include:
     - stage: Basic builds
-      env: BUILD=distcheck
-    - env: BUILD=autotools
+      env: BUILD=autotools
     - env: BUILD=autotools DEBUG=true
+    - env: BUILD=distcheck
     - env: BUILD=gallium LLVM=5.0
     - env: BUILD=gallium LLVM=4.0
     - env: BUILD=gallium LLVM=3.9

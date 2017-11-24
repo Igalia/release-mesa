@@ -31,6 +31,7 @@ env:
     - LLVM=3.9
     - MAKEFLAGS="-j4"
     - DEBUG=false
+    - DO_TAR_BUILD=${TAR_BUILD:-yes}
     - TAR=false
 
 before_script:
@@ -42,8 +43,10 @@ before_script:
 
 script:
   - |
-    POSTFIX=$(${DEBUG:-false} && printf ".debug")$([[ $BUILD == distcheck ]] && printf ".distcheck")
-    ./rocker build -f $ROCKERFILE_MESA --var BUILD=$BUILD --var LLVM=$LLVM --var DEBUG=$DEBUG --var TAR=$TAR --var TAG=${TRAVIS_BRANCH%%/*}-${TRAVIS_BRANCH##*/}$POSTFIX
+    if [[ $TAR == false || $DO_TAR_BUILD == yes ]]; then
+      POSTFIX=$(${DEBUG:-false} && printf ".debug")$([[ $BUILD == distcheck ]] && printf ".distcheck")
+      ./rocker build -f $ROCKERFILE_MESA --var BUILD=$BUILD --var LLVM=$LLVM --var DEBUG=$DEBUG --var TAR=$TAR --var TAG=${TRAVIS_BRANCH%%/*}-${TRAVIS_BRANCH##*/}$POSTFIX
+    fi
 
 after_success:
   - |

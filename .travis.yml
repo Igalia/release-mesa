@@ -31,6 +31,7 @@ env:
     - LLVM=3.9
     - MAKEFLAGS="-j4"
     - DEBUG=false
+    - DO_MESON_BUILD=${MESON_BUILD:-no}
     - DO_TAR_BUILD=${TAR_BUILD:-yes}
     - TAR=false
 
@@ -43,7 +44,9 @@ before_script:
 
 script:
   - |
-    if [[ $TAR == false || $DO_TAR_BUILD == yes ]]; then
+    [[ $TAR == true && $DO_TAR_BUILD != yes ]] && ROCKER_BUILD=no
+    [[ $BUILD == meson && $DO_MESON_BUILD != yes ]] && ROCKER_BUILD=no
+    if [[ $ROCKER_BUILD != no ]]; then
       POSTFIX=$(${DEBUG:-false} && printf ".debug")$([[ $BUILD == distcheck ]] && printf ".distcheck")
       ./rocker build -f $ROCKERFILE_MESA --var BUILD=$BUILD --var LLVM=$LLVM --var DEBUG=$DEBUG --var TAR=$TAR --var TAG=${TRAVIS_BRANCH%%/*}-${TRAVIS_BRANCH##*/}$POSTFIX
     fi
@@ -62,7 +65,8 @@ after_success:
 jobs:
   include:
     - stage: Basic builds
-      env: BUILD=autotools
+      env: BUILD=meson
+    - env: BUILD=autotools
     - env: BUILD=autotools DEBUG=true
     - env: BUILD=distcheck
     - env: BUILD=gallium LLVM=5.0
@@ -77,6 +81,7 @@ jobs:
     - env: BUILD=windows
 
     - stage: Post distcheck builds
-      env: BUILD=autotools TAR=true
+      env: BUILD=meson TAR=true
+    - env: BUILD=autotools TAR=true
     - env: BUILD=scons TAR=true
     - env: BUILD=windows TAR=true

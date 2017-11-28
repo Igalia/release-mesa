@@ -54,7 +54,6 @@ script:
 after_success:
   - |
     [[ ${TRAVIS_BRANCH%%/*} == pre-release || ${TRAVIS_BRANCH%%/*} == released ]] && DOCKER_PUSH=yes
-    [[ ${TRAVIS_BRANCH} == jasuarez/master ]] && DOCKER_PUSH=yes
     [[ ${TRAVIS_BRANCH} =~ ^agomez* ]] && DOCKER_PUSH=yes
     [[ ${BUILD} != autotools || ${BUILD} != distcheck ]] && DOCKER_PUSH=no
     if [[ -n $DOCKER_USERNAME && $TRAVIS_PULL_REQUEST == false && $DOCKER_PUSH == yes ]]; then

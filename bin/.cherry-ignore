@@ -149,3 +149,6 @@ bf0904e31fb7d9cd8932d582076c8d7beb02ba89 winsys/amdgpu: disable local BOs again 
 
 # stable: 17.3 nomination only.
 35c3cbad3c30ad3d40a6811dd6ca2286e013bfc5 radeonsi: don't call force_dcc_off for buffers
+
+# extra:  The commit just references a fix for an additional change in its v2.
+c1ff99fd70cd2ceb2cac4723e4fd5efc93834746 main: Clear shader program data whenever ProgramBinary is called

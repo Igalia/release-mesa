@@ -3576,7 +3576,12 @@ static bool
 can_blit_slice(struct intel_mipmap_tree *mt,
                unsigned int level, unsigned int slice)
 {
-   /* See intel_miptree_blit() for details on the 32k pitch limit. */
+   /* The blit destination is untiled, so its row_pitch will be slightly less
+    * than or equal to the source's row_pitch. The BLT engine only supports
+    * linear row pitches up to but not including 32k.
+    *
+    * See intel_miptree_blit() for details on the 32k pitch limit.
+    */
    if (mt->surf.row_pitch >= 32768)
       return false;
 

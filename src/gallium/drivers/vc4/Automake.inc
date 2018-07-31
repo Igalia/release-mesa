@@ -7,4 +7,11 @@ TARGET_LIB_DEPS += \
 	$(top_builddir)/src/gallium/drivers/vc4/libvc4.la \
 	$(top_builddir)/src/broadcom/cle/libbroadcom_cle.la
 
+if !HAVE_GALLIUM_V3D
+TARGET_LIB_DEPS += \
+	$(top_builddir)/src/broadcom/libbroadcom.la \
+	$(top_builddir)/src/broadcom/libbroadcom_v33.la \
+	$(top_builddir)/src/broadcom/libbroadcom_v41.la
+endif
+
 endif

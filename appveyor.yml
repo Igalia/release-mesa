@@ -23,22 +23,22 @@ version: '{build}'
 branches:
   only:
   - master
-  - 17.1
-  - igalia/17.1
-  - emil/17.1
-  - emil/wip/17.1
-  - pre-release/17.1
-  - released/17.1
-  - jasuarez/17.1
-  - agomez/17.1
-  - 17.2
-  - igalia/17.2
-  - emil/17.2
-  - emil/wip/17.2
-  - pre-release/17.2
-  - released/17.2
-  - jasuarez/17.2
-  - agomez/17.2
+  - jasuarez/master
+  - agomez/master
+  - 18.1
+  - staging/18.1
+  - emil/18.1
+  - igalia/18.1
+  - pre-release/18.1
+  - jasuarez/18.1
+  - agomez/18.1
+  - 18.2
+  - staging/18.2
+  - emil/18.2
+  - igalia/18.2
+  - pre-release/18.2
+  - jasuarez/18.2
+  - agomez/18.2
 
 # Don't download the full Mesa history to speed up cloning.  However the clone
 # depth must not be too small, otherwise builds might fail when lots of patches

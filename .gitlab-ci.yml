@@ -1,0 +1,357 @@
+image: docker:latest
+
+services:
+  - docker:dind
+
+stages:
+  - base
+  - llvm
+  - mesa
+  - tarball
+  - tests
+
+variables:
+  DOCKER_IMAGE: $CI_REGISTRY_IMAGE
+  CCACHE_DIR: $CI_PROJECT_DIR/../ccache
+  LLVM: "7"
+  DEBUG: "false"
+  TEST_BRANCH: "test/18.3"
+  MESA_REFERENCE: released-18-3-1
+  TEST_REFERENCE: test-18-3
+
+cache:
+  paths:
+    - ccache/
+  key: "$CI_JOB_STAGE"
+
+before_script:
+  - mkdir -p ccache
+  - rm -fr ../ccache
+  - mv ccache ../
+  - export MAKEFLAGS=-j$(nproc)
+  - apk --no-cache add libc6-compat curl jq
+  - wget https://github.com/grammarly/rocker/releases/download/1.3.1/rocker-1.3.1-linux_amd64.tar.gz
+  - tar xvf rocker-1.3.1-linux_amd64.tar.gz
+  - rm rocker-1.3.1-linux_amd64.tar.gz
+  - mv rocker ..
+  - docker login -u gitlab-ci-token -p $CI_BUILD_TOKEN $CI_REGISTRY
+
+after_script:
+  - mv ../ccache ./
+
+base:
+  stage: base
+  script:
+    - DOCKERFILE_SHA256=$(cat gitlab-ci/Rockerfile.base | sha256sum | cut -c-64)
+    - IMAGE_TAG=$CI_COMMIT_REF_SLUG-base
+    - IMAGE_DOCKERFILE_SHA256=$(./gitlab-ci/inspect-remote-image.sh gitlab-ci-token $CI_BUILD_TOKEN $CI_PROJECT_PATH $IMAGE_TAG ".config.Labels[\"dockerfile.sha256\"]" || echo -n "<notfound>")
+    - if [ "$DOCKERFILE_SHA256" != "$IMAGE_DOCKERFILE_SHA256" ] || [ "$CI_PIPELINE_SOURCE" == "schedule" ] ; then FORCE_BUILD=true ; fi
+    - if [ "$FORCE_BUILD" ] ; then ../rocker build -f gitlab-ci/Rockerfile.base --var DOCKERFILE_SHA256=$DOCKERFILE_SHA256 ; fi
+    - if [ "$FORCE_BUILD" ] ; then docker push $CI_REGISTRY_IMAGE:$IMAGE_TAG ; fi
+
+.build_llvm: &build_llvm
+  stage: llvm
+  cache: {}
+  script:
+    - DOCKERFILE_SHA256=$(cat gitlab-ci/Rockerfile.base gitlab-ci/Rockerfile.llvm | sha256sum | cut -c-64)
+    - IMAGE_TAG=$CI_COMMIT_REF_SLUG-llvm-$LLVM
+    - IMAGE_DOCKERFILE_SHA256=$(./gitlab-ci/inspect-remote-image.sh gitlab-ci-token $CI_BUILD_TOKEN $CI_PROJECT_PATH $IMAGE_TAG ".config.Labels[\"dockerfile.sha256\"]" || echo -n "<notfound>")
+    - if [ "$DOCKERFILE_SHA256" != "$IMAGE_DOCKERFILE_SHA256" ] || [ "$CI_PIPELINE_SOURCE" == "schedule" ] ; then FORCE_BUILD=true ; fi
+    - if [ "$FORCE_BUILD" ] ; then ../rocker build -f gitlab-ci/Rockerfile.llvm --var DOCKERFILE_SHA256=$DOCKERFILE_SHA256 --var LLVM=$LLVM; fi
+    - if [ "$FORCE_BUILD" ] ; then docker push $CI_REGISTRY_IMAGE:$IMAGE_TAG ; fi
+
+.build_mesa: &build_mesa
+  stage: mesa
+  script:
+    - ../rocker build -f gitlab-ci/Rockerfile.mesa --var BUILD=$BUILD --var LLVM=$LLVM --var DEBUG=$DEBUG .
+
+.build_tarball: &build_tarball
+  stage: tarball
+  dependencies:
+    - distcheck
+  except:
+    - schedules
+    - /^released\//
+  script:
+    - tar -xf release-output/mesa-*.tar.xz
+    - ../rocker build -f gitlab-ci/Rockerfile.mesa --var BUILD=$BUILD --var LLVM=$LLVM --var DEBUG=$DEBUG mesa-*
+
+.build_testsuite: &build_testsuite
+  stage: tests
+  cache: {}
+  except:
+    - schedules
+  before_script: []
+  after_script: []
+  script:
+    - apk --no-cache add curl
+    - if [ "${CI_COMMIT_REF_NAME%%/*}" != "released" ] ; then SET_TEST_REFERENCE="-F variables[TEST_REFERENCE]=${MESA_REFERENCE}_${TEST_REFERENCE}" ; fi
+    - if [ "${PROJECT_ID}" ] ; then curl -X POST -F "token=${CI_JOB_TOKEN}" -F "ref=${TEST_BRANCH}" -F "variables[MESA_VERSION]=${CI_COMMIT_REF_SLUG}" ${SET_TEST_REFERENCE} https://gitlab.com/api/v4/projects/${PROJECT_ID}/trigger/pipeline ; fi
+
+tests:piglit:
+  variables:
+    PROJECT_ID: $PIGLIT_PROJECT_ID
+  <<: *build_testsuite
+
+tests:gl-cts:
+  variables:
+    PROJECT_ID: $VK_GL_CTS_PROJECT_ID
+    TEST_BRANCH: "test/gl/18.3"
+    TEST_REFERENCE: test-gl-18-3
+  <<: *build_testsuite
+
+tests:vk-cts:
+  variables:
+    PROJECT_ID: $VK_GL_CTS_PROJECT_ID
+    TEST_BRANCH: "test/vk/18.3"
+    TEST_REFERENCE: test-vk-18-3
+  <<: *build_testsuite
+
+tests:crucible:
+  variables:
+    PROJECT_ID: $CRUCIBLE_PROJECT_ID
+  <<: *build_testsuite
+
+llvm:3.3:
+  except:
+    - /^released\//
+  variables:
+    LLVM: "3.3"
+  <<: *build_llvm
+
+llvm:3.6:
+  except:
+    - /^released\//
+  variables:
+    LLVM: "3.6"
+  <<: *build_llvm
+
+llvm:3.8:
+  except:
+    - /^released\//
+  variables:
+    LLVM: "3.8"
+  <<: *build_llvm
+
+llvm:3.9:
+  except:
+    - /^released\//
+  variables:
+    LLVM: "3.9"
+  <<: *build_llvm
+
+llvm:4.0:
+  except:
+    - /^released\//
+  variables:
+    LLVM: "4.0"
+  <<: *build_llvm
+
+llvm:5.0:
+  except:
+    - /^released\//
+  variables:
+    LLVM: "5.0"
+  <<: *build_llvm
+
+llvm:6.0:
+  except:
+    - /^released\//
+  variables:
+    LLVM: "6.0"
+  <<: *build_llvm
+
+llvm:7:
+  variables:
+    LLVM: "7"
+  <<: *build_llvm
+
+llvm:8:
+  except:
+    - /^released\//
+  variables:
+    LLVM: "8"
+  <<: *build_llvm
+
+meson:
+  except:
+    - schedules
+  variables:
+    BUILD: "meson"
+  after_script:
+    - mv ../ccache ./
+    - docker push $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG
+  <<: *build_mesa
+
+autotools:
+  except:
+    - schedules
+    - /^released\//
+  variables:
+    BUILD: "autotools"
+  <<: *build_mesa
+
+autotools:debug:
+  except:
+    - schedules
+    - /^released\//
+  variables:
+    BUILD: "autotools"
+    DEBUG: "true"
+  <<: *build_mesa
+
+distcheck:
+  except:
+    - schedules
+    - /^released\//
+  variables:
+    BUILD: "distcheck"
+  artifacts:
+    name: "release"
+    paths:
+      - release-output/
+    expire_in: 1 week
+  <<: *build_mesa
+
+gallium:llvm:8:
+  except:
+    - schedules
+    - /^released\//
+  variables:
+    BUILD: "gallium"
+    LLVM: "8"
+  <<: *build_mesa
+
+gallium:llvm:7:
+  except:
+    - schedules
+    - /^released\//
+  variables:
+    BUILD: "gallium"
+    LLVM: "7"
+  <<: *build_mesa
+
+gallium:llvm:6.0:
+  except:
+    - schedules
+    - /^released\//
+  variables:
+    BUILD: "gallium"
+    LLVM: "6.0"
+  <<: *build_mesa
+
+gallium:llvm:5.0:
+  except:
+    - schedules
+    - /^released\//
+  variables:
+    BUILD: "gallium"
+    LLVM: "5.0"
+  <<: *build_mesa
+
+gallium:llvm:4.0:
+  except:
+    - schedules
+    - /^released\//
+  variables:
+    BUILD: "gallium"
+    LLVM: "4.0"
+  <<: *build_mesa
+
+gallium:llvm:3.9:
+  except:
+    - schedules
+    - /^released\//
+  variables:
+    BUILD: "gallium"
+    LLVM: "3.9"
+  <<: *build_mesa
+
+gallium:llvm:3.8:
+  except:
+    - schedules
+    - /^released\//
+  variables:
+    BUILD: "gallium"
+    LLVM: "3.8"
+  <<: *build_mesa
+
+gallium:llvm:3.6:
+  except:
+    - schedules
+    - /^released\//
+  variables:
+    BUILD: "gallium"
+    LLVM: "3.6"
+  <<: *build_mesa
+
+gallium:llvm:3.3:
+  except:
+    - schedules
+    - /^released\//
+  variables:
+    BUILD: "gallium"
+    LLVM: "3.3"
+  <<: *build_mesa
+
+gallium:nollvm:
+  except:
+    - schedules
+    - /^released\//
+  variables:
+    BUILD: "gallium"
+    LLVM: "0.0"
+  <<: *build_mesa
+
+scons:
+  except:
+    - schedules
+    - /^released\//
+  variables:
+    BUILD: "scons"
+  <<: *build_mesa
+
+scons:nollvm:
+  except:
+    - schedules
+    - /^released\//
+  variables:
+    BUILD: "scons"
+    LLVM: "0.0"
+  <<: *build_mesa
+
+windows:
+  except:
+    - schedules
+    - /^released\//
+  variables:
+    BUILD: "windows"
+  <<: *build_mesa
+
+# android:
+#  except:
+#    - schedules
+#    - /^released\//
+#   variables:
+#     BUILD: "android"
+#   <<: *build_mesa
+
+tarball:meson:
+  variables:
+    BUILD: "meson"
+  <<: *build_tarball
+
+tarball:autotools:
+  variables:
+    BUILD: "autotools"
+  <<: *build_tarball
+
+tarball:scons:
+  variables:
+    BUILD: "scons"
+  <<: *build_tarball
+
+tarball:windows:
+  variables:
+    BUILD: "windows"
+  <<: *build_tarball

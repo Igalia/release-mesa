@@ -28,7 +28,7 @@ branches:
 
 env:
   global:
-    - LLVM=5.0
+    - LLVM=6.0
     - MAKEFLAGS="-j4"
     - DEBUG=false
     - DO_MESON_BUILD=${MESON_BUILD:-no}

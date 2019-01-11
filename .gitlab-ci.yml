@@ -8,7 +8,6 @@ stages:
   - llvm
   - mesa
   - tarball
-  - tests
 
 variables:
   DOCKER_IMAGE: $CI_REGISTRY_IMAGE
@@ -75,42 +74,6 @@ base:
   script:
     - tar -xf release-output/mesa-*.tar.xz
     - ../rocker build -f gitlab-ci/Rockerfile.mesa --var BUILD=$BUILD --var LLVM=$LLVM --var DEBUG=$DEBUG mesa-*
-
-.build_testsuite: &build_testsuite
-  stage: tests
-  cache: {}
-  except:
-    - schedules
-  before_script: []
-  after_script: []
-  script:
-    - apk --no-cache add curl
-    - if [ "${CI_COMMIT_REF_NAME%%/*}" != "released" ] ; then SET_TEST_REFERENCE="-F variables[TEST_REFERENCE]=${MESA_REFERENCE}_${TEST_REFERENCE}" ; fi
-    - if [ "${PROJECT_ID}" ] ; then curl -X POST -F "token=${CI_JOB_TOKEN}" -F "ref=${TEST_BRANCH}" -F "variables[MESA_VERSION]=${CI_COMMIT_REF_SLUG}" ${SET_TEST_REFERENCE} https://gitlab.com/api/v4/projects/${PROJECT_ID}/trigger/pipeline ; fi
-
-tests:piglit:
-  variables:
-    PROJECT_ID: $PIGLIT_PROJECT_ID
-  <<: *build_testsuite
-
-tests:gl-cts:
-  variables:
-    PROJECT_ID: $VK_GL_CTS_PROJECT_ID
-    TEST_BRANCH: "test/gl/18.3"
-    TEST_REFERENCE: test-gl-18-3
-  <<: *build_testsuite
-
-tests:vk-cts:
-  variables:
-    PROJECT_ID: $VK_GL_CTS_PROJECT_ID
-    TEST_BRANCH: "test/vk/18.3"
-    TEST_REFERENCE: test-vk-18-3
-  <<: *build_testsuite
-
-tests:crucible:
-  variables:
-    PROJECT_ID: $CRUCIBLE_PROJECT_ID
-  <<: *build_testsuite
 
 llvm:3.3:
   except:

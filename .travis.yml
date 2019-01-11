@@ -69,6 +69,7 @@ jobs:
     - env: BUILD=autotools
     - env: BUILD=autotools DEBUG=true
     - env: BUILD=distcheck
+    - env: BUILD=gallium LLVM=7
     - env: BUILD=gallium LLVM=6.0
     - env: BUILD=gallium LLVM=5.0
     - env: BUILD=gallium LLVM=4.0

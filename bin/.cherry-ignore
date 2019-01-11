@@ -1,2 +1,6 @@
-# fixes: Commit was squashed into the respective offenders
+#  fixes: Commit was squashed into the respective offenders
 c02390f8fcd367c7350db568feabb2f062efca14 egl/wayland: rather obvious build fix
+
+#  fixes: Commit doesn't tag the immediate fix and depends in many
+#         intermediate changes. Just not needed for 18.3.
+cfe8220904b79ee45083970c0325bf59a140e163 mesa/st/nir: fix missing nir_compact_varyings

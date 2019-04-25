@@ -25,7 +25,7 @@ branches:
   - igalia/19.0
   - pre-release/19.0
   - jasuarez/19.0
-  - released/19.0.3
+  - released/19.0.4
 
 # Don't download the full Mesa history to speed up cloning.  However the clone
 # depth must not be too small, otherwise builds might fail when lots of patches

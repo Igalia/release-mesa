@@ -1,0 +1,40 @@
+# This builds and installs Megaglest.
+#
+#
+# ~~~
+#  rocker build -f Rockerfile.megaglest
+# ~~~
+#
+# Environment variables that are used in the build:
+#  - CI_COMMIT_REF_SLUG: branch/tag name, escape
+#  - CI_REGISTRY_IMAGE: base image
+#  - DOCKER_IMAGE: name of the final image to be tagged (default: megaglest[:$CI_COMMIT_REF_SLUG])
+#
+# To run
+#
+# ~~~
+#   docker run --rm -t -v /tmp/.X11-unix:/tmp/.X11-unix \
+#              -e DISPLAY=unix$DISPLAY \
+#              [-e LIBGL_ALWAYS_SOFTWARE=1] \
+#              [-e GALLIUM_DRIVER=$GALLIUM_DRIVER] \
+#              megaglest
+# ~~~
+
+
+{{ $image := (or .Env.DOCKER_IMAGE "megaglest") }}
+
+FROM {{ .Env.CI_REGISTRY_IMAGE }}:{{ .Env.CI_COMMIT_REF_SLUG }}
+
+LABEL maintainer "Juan A. Suarez Romero <jasuarez@igalia.com>"
+
+RUN apt-get update                                                  \
+  && apt-get -y --no-install-recommends install megaglest           \
+  && rm -fr /var/lib/apt/lists/*
+
+USER local
+
+CMD "/bin/sh" "-c" "/usr/games/megaglest && /usr/games/megaglest --opengl-info"
+
+{{ if .Env.CI_COMMIT_REF_SLUG }}
+TAG {{ $image }}:{{ .Env.CI_COMMIT_REF_SLUG }}
+{{ end }}

@@ -1,0 +1,64 @@
+# This builds and installs vkQuake.
+#
+#
+# ~~~
+#  rocker build -f Rockerfile.vkquake
+# ~~~
+#
+# Environment variables that are used in the build:
+#  - CI_COMMIT_REF_SLUG: branch/tag name, escape
+#  - CI_REGISTRY_IMAGE: base image
+#  - DOCKER_IMAGE: name of the final image to be tagged (default: vkquake[:$CI_COMMIT_REF_SLUG])
+#  - MAKEFLAGS: flags to pass to make (e.g., "-j8")
+#  - CCACHE_DIR: ccache directory (e.g., ~/.ccache)
+#
+# To run
+#
+# ~~~
+#   docker run --rm -t -v /tmp/.X11-unix:/tmp/.X11-unix \
+#              -e DISPLAY=unix$DISPLAY \
+#              vkquake
+# ~~~
+
+
+{{ $image := (or .Env.DOCKER_IMAGE "vkquake") }}
+
+FROM {{ .Env.CI_REGISTRY_IMAGE }}:{{ .Env.CI_COMMIT_REF_SLUG }}
+
+LABEL maintainer "Juan A. Suarez Romero <jasuarez@igalia.com>"
+
+RUN apt-get update                                          \
+ && apt-get -y --no-install-recommends install libsdl2-dev  \
+     libvulkan-dev libvorbis-dev libmad0-dev                \
+  && rm -fr /var/lib/apt/lists/*
+
+USER local
+
+{{ if .Env.MAKEFLAGS }}
+ENV MAKEFLAGS={{ .Env.MAKEFLAGS }}
+{{ end }}
+
+{{ if .Env.CCACHE_DIR }}
+MOUNT {{ .Env.CCACHE_DIR }}:/home/local/.ccache:Z
+RUN sudo chown -R local:local /home/local/.ccache
+ENV PATH=/usr/lib/ccache:$PATH
+ENV USE_CCACHE=1
+{{ end }}
+
+WORKDIR /home/local
+
+RUN git clone https://github.com/Novum/vkQuake      \
+  && cd vkQuake/Quake                               \
+  && make
+
+WORKDIR /home/local/vkQuake/Quake
+
+RUN mkdir -p id1
+
+ADD https://github.com/rictorres/quake-ktx-server/raw/master/id1/pak0.pak id1/
+
+CMD "/bin/sh" "-c" "/home/local/vkQuake/Quake/vkquake"
+
+{{ if .Env.CI_COMMIT_REF_SLUG }}
+TAG {{ $image }}:{{ .Env.CI_COMMIT_REF_SLUG }}
+{{ end }}
